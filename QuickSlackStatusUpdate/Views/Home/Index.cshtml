@@ -1,0 +1,28 @@
+﻿@model AddButtonModel
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Let's do some quick slack status update!</p>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a href="@Model.SlackUrl">
+                <img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" />
+            </a>
+
+
+            <form action="/api/slack/status" method="post">
+                <button>Update!</button>
+            </form>
+        }
+        else
+        {
+            <form action="/signin" method="post">
+                <button class="btn btn-lg btn-success m-1" type="submit">Connect using Slack</button>
+            </form>
+        }
+    </div>
