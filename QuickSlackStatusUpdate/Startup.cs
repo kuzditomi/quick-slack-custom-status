@@ -20,6 +20,9 @@ namespace QuickSlackStatusUpdate
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            this.clientId = configuration["SlackStatusUpdate:ClientId"];
+            this.clientSecret = configuration["SlackStatusUpdate:ClientSecret"];
         }
 
         public IConfiguration Configuration { get; }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using QuickSlackStatusUpdate.Data;
 using System;
@@ -20,8 +21,14 @@ namespace QuickSlackStatusUpdate.Controllers
 
     public class AuthController : Controller
     {
-        string clientId = "";
-        string clientSecret = "";
+        string clientId;
+        string clientSecret;
+
+        public AuthController(IConfiguration configuration)
+        {
+            this.clientId = configuration["SlackStatusUpdate:ClientId"];
+            this.clientSecret = configuration["SlackStatusUpdate:ClientSecret"];
+        }
 
         [Route("/api/slack/authorize")]
         [HttpGet]
