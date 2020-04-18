@@ -11,8 +11,20 @@
     {
         @if (Model.IsLinked)
         {
-            <form action="/api/slack/status" method="post">
-                <button>Update!</button>
+            <script>
+                loadSavedStatuses();
+            </script>
+            <form id="updateForm" action="/api/slack/status" method="post">
+                <label>
+                    status text
+                    <input name="statustext" />
+                </label>
+                <label>
+                    status emoji
+                    <input name="statusemoji" />
+                </label>
+
+                <button id="update">Update!</button>
             </form>
         }
         else

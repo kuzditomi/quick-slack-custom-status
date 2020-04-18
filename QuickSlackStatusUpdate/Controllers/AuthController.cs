@@ -46,15 +46,6 @@ namespace QuickSlackStatusUpdate.Controllers
                 new KeyValuePair<string, string>("code", code)
             };
 
-            //var httpClient = new HttpClient();
-            //var request = new HttpRequestMessage(HttpMethod.Post, "https://slack.com/api/oauth.access")
-            //{
-            //    Content = new FormUrlEncodedContent(@params)
-            //};
-
-            //var result = await httpClient.SendAsync(request);
-            //var resultJsonString = await result.Content.ReadAsStringAsync();
-
             string resultJsonString = "";
             using (var httpClient = new HttpClient())
             {
