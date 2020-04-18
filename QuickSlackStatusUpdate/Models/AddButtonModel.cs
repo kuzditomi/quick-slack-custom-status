@@ -8,5 +8,6 @@ namespace QuickSlackStatusUpdate.Models
     public class AddButtonModel
     {
         public string SlackUrl { get; set; }
+        public bool IsLinked { get; set; }
     }
 }

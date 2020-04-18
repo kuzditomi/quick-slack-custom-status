@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNet.Security.OAuth.Slack;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using QuickSlackStatusUpdate.Data;
 using QuickSlackStatusUpdate.Models;
 
 namespace QuickSlackStatusUpdate.Controllers
@@ -21,7 +24,7 @@ namespace QuickSlackStatusUpdate.Controllers
             this.clientId = configuration["SlackStatusUpdate:ClientId"];
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var scope = "users.profile:write";
             var redirectUri = string.Format("{0}://{1}{2}", Request.Scheme, Request.Host.Value, "/api/slack/authorize");
@@ -30,6 +33,23 @@ namespace QuickSlackStatusUpdate.Controllers
             {
                 SlackUrl = $"https://slack.com/oauth/authorize?scope={scope}&client_id={clientId}&redirect_uri={redirectUri}"
             };
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var teamidClaim = User.Claims.SingleOrDefault(c => c.Type == SlackAuthenticationConstants.Claims.TeamId);
+
+                if (teamidClaim != null && !String.IsNullOrEmpty(teamidClaim.Value))
+                {
+                    using (var db = new SlackDataContext())
+                    {
+                        var savedToken = await db.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == teamidClaim.Value);
+                        if(savedToken != null && !String.IsNullOrEmpty(savedToken.Token))
+                        {
+                            model.IsLinked = true;
+                        }
+                    }
+                }
+            }
 
             return View(model);
         }
