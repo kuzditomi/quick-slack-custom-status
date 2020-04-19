@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using QuickSlackStatusUpdate.Data;
 
 namespace QuickSlackStatusUpdate
 {
@@ -31,6 +33,10 @@ namespace QuickSlackStatusUpdate
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<SlackDataContext>(options =>
+                options.UseSqlite($"Data Source=db/slackstatus.db")
+            );
+
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -54,7 +60,7 @@ namespace QuickSlackStatusUpdate
                     .AddSlack(options =>
                     {
                         options.ClientId = clientId;
-                        options.ClientSecret =clientSecret;
+                        options.ClientSecret = clientSecret;
                     });
         }
 

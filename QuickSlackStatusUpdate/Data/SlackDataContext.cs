@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 
 namespace QuickSlackStatusUpdate.Data
 {
     public class SlackDataContext : DbContext
     {
-        public DbSet<WorkspaceToken> WorkspaceTokens { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public SlackDataContext(DbContextOptions options): base(options)
         {
-            optionsBuilder.UseSqlite("Data Source=workspaceapp.db");
         }
+
+        public DbSet<WorkspaceToken> WorkspaceTokens { get; set; }
     }
 
     public class WorkspaceToken

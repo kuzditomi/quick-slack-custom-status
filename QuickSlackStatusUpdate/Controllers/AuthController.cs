@@ -23,13 +23,16 @@ namespace QuickSlackStatusUpdate.Controllers
 
     public class AuthController : Controller
     {
-        string clientId;
-        string clientSecret;
+        private string clientId;
+        private string clientSecret;
 
-        public AuthController(IConfiguration configuration)
+        private SlackDataContext _dbContext;
+
+        public AuthController(IConfiguration configuration, SlackDataContext dbContext)
         {
             this.clientId = configuration["SlackStatusUpdate:ClientId"];
             this.clientSecret = configuration["SlackStatusUpdate:ClientSecret"];
+            this._dbContext = dbContext;
         }
 
         [Route("/api/slack/authorize")]
@@ -70,27 +73,25 @@ namespace QuickSlackStatusUpdate.Controllers
                 return new StatusCodeResult(500);
             }
 
-            using (var db = new SlackDataContext())
+
+            var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == workspaceTokenResponse.team_id);
+
+            if (savedToken != null)
             {
-                var savedToken = await db.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == workspaceTokenResponse.team_id);
-
-                if (savedToken != null)
-                {
-                    savedToken.Token = workspaceTokenResponse.access_token;
-                }
-                else
-                {
-                    db.WorkspaceTokens.Add(new WorkspaceToken
-                    {
-                        Id = new Guid(),
-                        AppId = workspaceTokenResponse.app_id,
-                        TeamId = workspaceTokenResponse.team_id,
-                        Token = workspaceTokenResponse.access_token
-                    });
-                }
-
-                db.SaveChanges();
+                savedToken.Token = workspaceTokenResponse.access_token;
             }
+            else
+            {
+                this._dbContext.WorkspaceTokens.Add(new WorkspaceToken
+                {
+                    Id = new Guid(),
+                    AppId = workspaceTokenResponse.app_id,
+                    TeamId = workspaceTokenResponse.team_id,
+                    Token = workspaceTokenResponse.access_token
+                });
+            }
+
+            await this._dbContext.SaveChangesAsync();
 
             return Redirect("/");
         }

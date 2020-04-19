@@ -17,11 +17,13 @@ namespace QuickSlackStatusUpdate.Controllers
     {
         private string clientId;
         private readonly ILogger<HomeController> _logger;
+        private readonly SlackDataContext _dbContext;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration, SlackDataContext dbContext)
         {
             _logger = logger;
             this.clientId = configuration["SlackStatusUpdate:ClientId"];
+            this._dbContext = dbContext;
         }
 
         public async Task<IActionResult> Index()
@@ -40,13 +42,10 @@ namespace QuickSlackStatusUpdate.Controllers
 
                 if (teamidClaim != null && !String.IsNullOrEmpty(teamidClaim.Value))
                 {
-                    using (var db = new SlackDataContext())
+                    var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == teamidClaim.Value);
+                    if (savedToken != null && !String.IsNullOrEmpty(savedToken.Token))
                     {
-                        var savedToken = await db.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == teamidClaim.Value);
-                        if(savedToken != null && !String.IsNullOrEmpty(savedToken.Token))
-                        {
-                            model.IsLinked = true;
-                        }
+                        model.IsLinked = true;
                     }
                 }
             }

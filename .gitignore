@@ -3,4 +3,5 @@ debug/
 obj/
 .vs
 *.db
+db/
 .env

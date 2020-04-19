@@ -14,6 +14,12 @@ namespace QuickSlackStatusUpdate.Controllers
 {
     public class SlackController : Controller
     {
+        private SlackDataContext _dbContext;
+        public SlackController(SlackDataContext dbContext)
+        {
+            this._dbContext = dbContext;
+        }
+
         private async Task<string> GetToken()
         {
             if (User.Identity.IsAuthenticated)
@@ -22,19 +28,17 @@ namespace QuickSlackStatusUpdate.Controllers
 
                 if (teamidClaim != null && !String.IsNullOrEmpty(teamidClaim.Value))
                 {
-                    using (var db = new SlackDataContext())
+                    var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == teamidClaim.Value);
+                    if (savedToken != null && !String.IsNullOrEmpty(savedToken.Token))
                     {
-                        var savedToken = await db.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == teamidClaim.Value);
-                        if (savedToken != null && !String.IsNullOrEmpty(savedToken.Token))
-                        {
-                            return savedToken.Token;
-                        }
+                        return savedToken.Token;
                     }
                 }
             }
 
             return null;
         }
+        
         [Route("/api/slack/status")]
         [HttpPost]
         public async Task<ActionResult> UpdateStatus(string statustext, string statusemoji)

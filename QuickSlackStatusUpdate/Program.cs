@@ -25,8 +25,13 @@ namespace QuickSlackStatusUpdate
 
         private static void CreateDbIfNotExists(IHost host)
         {
-            var context = new SlackDataContext();
-            context.Database.Migrate();
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                var context = services.GetRequiredService<SlackDataContext>();
+                context.Database.Migrate();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
