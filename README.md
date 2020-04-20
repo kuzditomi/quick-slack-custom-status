@@ -30,5 +30,5 @@ docker-compose up -d
 ```
 
 # Deployment
-To build a new docker image, use `.\build-and-push.ps1`. You have to change the image's name of course if you wish to use your own modified version.
+To build a new docker image, use `.\build.ps1`. You have to change the image's name of course if you wish to use your own modified version.
 If you wish to check the built image you can run it with `docker-compose up -d`  after completing the `.env` file.
