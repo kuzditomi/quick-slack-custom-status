@@ -11,30 +11,37 @@
     {
         @if (Model.IsLinked)
         {
-            <script>
-                loadSavedStatuses();
-            </script>
-            <form id="updateForm" action="/api/slack/status" method="post">
+            <div>
                 <label>
                     workspace
                     <select name="linkId">
-                    @foreach (var linkedTeam in Model.Links)
-                    {
-                        <option value="@linkedTeam.Id">@linkedTeam.Name</option>
-                    }
+                        @foreach (var linkedTeam in Model.Links)
+                        {
+                            <option value="@linkedTeam.Id">@linkedTeam.Name</option>
+                        }
                     </select>
                 </label>
-                <label>
-                    status text
-                    <input name="statustext" />
-                </label>
-                <label>
-                    status emoji
-                    <input name="statusemoji" />
-                </label>
+            </div>
+            <div id="saved-statuses">
 
-                <button id="update">Update!</button>
-            </form>
+            </div>
+            <label>
+                status text
+                <input id="statustext" />
+            </label>
+            <label>
+                status emoji
+                <input id="statusemoji" />
+            </label>
+
+            <button id="add">Add to list!</button>
+            @section Scripts{
+                <script>
+                    $(document).ready(() => {
+                        initStatusScript();
+                    });
+                </script>
+            }
         }
         else
         {
