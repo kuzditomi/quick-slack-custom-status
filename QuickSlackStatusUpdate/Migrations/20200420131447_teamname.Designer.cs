@@ -9,8 +9,8 @@ using QuickSlackStatusUpdate.Data;
 namespace QuickSlackStatusUpdate.Migrations
 {
     [DbContext(typeof(SlackDataContext))]
-    [Migration("20200405212944_initial")]
-    partial class initial
+    [Migration("20200420131447_teamname")]
+    partial class teamname
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,13 +24,16 @@ namespace QuickSlackStatusUpdate.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("AppId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("TeamId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("TeamName")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Token")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

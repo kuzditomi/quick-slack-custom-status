@@ -12,9 +12,9 @@ namespace QuickSlackStatusUpdate.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Token = table.Column<string>(nullable: true),
-                    AppId = table.Column<string>(nullable: true),
-                    TeamId = table.Column<string>(nullable: true)
+                    UserId = table.Column<string>(nullable: true),
+                    TeamId = table.Column<string>(nullable: true),
+                    Token = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

@@ -16,6 +16,15 @@
             </script>
             <form id="updateForm" action="/api/slack/status" method="post">
                 <label>
+                    workspace
+                    <select name="linkId">
+                    @foreach (var linkedTeam in Model.Links)
+                    {
+                        <option value="@linkedTeam.Id">@linkedTeam.Name</option>
+                    }
+                    </select>
+                </label>
+                <label>
                     status text
                     <input name="statustext" />
                 </label>

@@ -38,13 +38,20 @@ namespace QuickSlackStatusUpdate.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-                var teamidClaim = User.Claims.SingleOrDefault(c => c.Type == SlackAuthenticationConstants.Claims.TeamId);
+                var userIdClaim = User.Claims.SingleOrDefault(c => c.Type == SlackAuthenticationConstants.Claims.UserId);
 
-                if (teamidClaim != null && !String.IsNullOrEmpty(teamidClaim.Value))
+                if (userIdClaim != null && !String.IsNullOrEmpty(userIdClaim.Value))
                 {
-                    var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == teamidClaim.Value);
-                    if (savedToken != null && !String.IsNullOrEmpty(savedToken.Token))
+                    var savedTokens = await this._dbContext.WorkspaceTokens.Where(t => t.UserId == userIdClaim.Value).ToListAsync();
+
+                    if (savedTokens.Count > 0)
                     {
+                        model.Links = savedTokens.Select(st => new LinkedWorkspace
+                        {
+                            Id = st.Id.ToString(),
+                            Name = st.TeamName
+                        });
+
                         model.IsLinked = true;
                     }
                 }

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuickSlackStatusUpdate.Data;
 
 namespace QuickSlackStatusUpdate.Migrations
 {
     [DbContext(typeof(SlackDataContext))]
-    partial class SlackDataContextModelSnapshot : ModelSnapshot
+    [Migration("20200420102009_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,9 +25,6 @@ namespace QuickSlackStatusUpdate.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TeamId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TeamName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Token")

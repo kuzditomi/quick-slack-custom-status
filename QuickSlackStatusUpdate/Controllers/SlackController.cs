@@ -20,30 +20,33 @@ namespace QuickSlackStatusUpdate.Controllers
             this._dbContext = dbContext;
         }
 
-        private async Task<string> GetToken()
+        private async Task<string> GetToken(Guid linkId)
         {
             if (User.Identity.IsAuthenticated)
             {
-                var teamidClaim = User.Claims.SingleOrDefault(c => c.Type == SlackAuthenticationConstants.Claims.TeamId);
+                var userIdClaim = User.Claims.SingleOrDefault(c => c.Type == SlackAuthenticationConstants.Claims.UserId);
 
-                if (teamidClaim != null && !String.IsNullOrEmpty(teamidClaim.Value))
+                if (userIdClaim != null && !String.IsNullOrEmpty(userIdClaim.Value))
                 {
-                    var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == teamidClaim.Value);
-                    if (savedToken != null && !String.IsNullOrEmpty(savedToken.Token))
+                    var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.Id == linkId);
+
+                    if (savedToken == null || savedToken.UserId != userIdClaim.Value)
                     {
-                        return savedToken.Token;
+                        return null;
                     }
+
+                    return savedToken.Token;
                 }
             }
 
             return null;
         }
-        
+
         [Route("/api/slack/status")]
         [HttpPost]
-        public async Task<ActionResult> UpdateStatus(string statustext, string statusemoji)
+        public async Task<ActionResult> UpdateStatus(string linkId, string statustext, string statusemoji)
         {
-            var token = await this.GetToken();
+            var token = await this.GetToken(Guid.Parse(linkId));
 
             if (token == null)
             {

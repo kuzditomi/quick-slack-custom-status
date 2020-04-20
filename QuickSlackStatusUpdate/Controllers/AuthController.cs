@@ -16,8 +16,9 @@ namespace QuickSlackStatusUpdate.Controllers
 {
     public class WorkspaceTokenResponse
     {
-        public string app_id { get; set; }
+        public string user_id { get; set; }
         public string team_id { get; set; }
+        public string team_name { get; set; }
         public string access_token { get; set; }
     }
 
@@ -67,14 +68,15 @@ namespace QuickSlackStatusUpdate.Controllers
 
             if (
                 String.IsNullOrEmpty(workspaceTokenResponse.team_id) ||
-                String.IsNullOrEmpty(workspaceTokenResponse.access_token)
+                String.IsNullOrEmpty(workspaceTokenResponse.access_token) ||
+                String.IsNullOrEmpty(workspaceTokenResponse.user_id)
             )
             {
                 return new StatusCodeResult(500);
             }
 
 
-            var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.TeamId == workspaceTokenResponse.team_id);
+            var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.UserId == workspaceTokenResponse.user_id && t.TeamId == t.TeamId);
 
             if (savedToken != null)
             {
@@ -85,8 +87,9 @@ namespace QuickSlackStatusUpdate.Controllers
                 this._dbContext.WorkspaceTokens.Add(new WorkspaceToken
                 {
                     Id = new Guid(),
-                    AppId = workspaceTokenResponse.app_id,
+                    UserId = workspaceTokenResponse.user_id,
                     TeamId = workspaceTokenResponse.team_id,
+                    TeamName = workspaceTokenResponse.team_name,
                     Token = workspaceTokenResponse.access_token
                 });
             }

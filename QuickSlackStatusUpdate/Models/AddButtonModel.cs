@@ -9,5 +9,6 @@ namespace QuickSlackStatusUpdate.Models
     {
         public string SlackUrl { get; set; }
         public bool IsLinked { get; set; }
+        public IEnumerable<LinkedWorkspace> Links { get; set; }
     }
 }
