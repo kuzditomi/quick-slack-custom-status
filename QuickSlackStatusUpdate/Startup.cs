@@ -62,6 +62,8 @@ namespace QuickSlackStatusUpdate
                         options.ClientId = clientId;
                         options.ClientSecret = clientSecret;
                     });
+
+            services.AddProgressiveWebApp();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
