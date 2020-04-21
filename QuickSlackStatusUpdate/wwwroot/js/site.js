@@ -58,15 +58,18 @@ window.initStatusScript = () => {
         $('#saved-statuses').html('');
 
         for (const status of savedStatuses) {
-            const $listElement = $('<div/>');
-            const $label = $('<label>').text(`${status.text} (${status.emoji})`);
+            const $listElement = $('<div class="status-list-item"/>');
+            const $label = $('<span class="status-text"/>').text(status.text);
+            const $emoji = $('<span class="status-emoji"/>').text(status.emoji);
             const $button = $('<button>')
+                .attr('title', 'update status!')
                 .addClass('update-status')
-                .text('update!')
+                .text('▶')
                 .data('text', status.text)
                 .data('emoji', status.emoji);
 
             $listElement.append($label);
+            $listElement.append($emoji);
             $listElement.append($button);
 
             $('#saved-statuses').append($listElement);
