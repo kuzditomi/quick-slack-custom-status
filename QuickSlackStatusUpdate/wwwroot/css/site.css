@@ -81,6 +81,10 @@ body {
     border-bottom: 1px solid gray;
 }
 
+.status-list-item:hover {
+    background-color: #cdcdcd;
+}
+
     .status-list-item .status-text {
         min-width: 120px;
     }
