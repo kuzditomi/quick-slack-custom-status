@@ -45,12 +45,13 @@ namespace QuickSlackStatusUpdate.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                var workspaceName = await GetUserWorkspaceName();
+                var workspace = await GetUserWorkspace();
 
                 var user = new UserViewModel
                 {
                     Name = User.Identity.Name,
-                    WorkspaceName = workspaceName
+                    WorkspaceId = workspace?.TeamId ?? String.Empty,
+                    WorkspaceName = workspace?.TeamName ?? String.Empty
                 };
 
                 return Ok(user);
@@ -110,7 +111,6 @@ namespace QuickSlackStatusUpdate.Controllers
                 return new StatusCodeResult(500);
             }
 
-
             var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.UserId == workspaceTokenResponse.user_id && t.TeamId == t.TeamId);
 
             if (savedToken != null)
@@ -152,7 +152,7 @@ namespace QuickSlackStatusUpdate.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
-        private async Task<string> GetUserWorkspaceName()
+        private async Task<WorkspaceToken> GetUserWorkspace()
         {
             var userIdClaim = User.Claims.SingleOrDefault(c => c.Type == SlackAuthenticationConstants.Claims.UserId);
 
@@ -162,7 +162,7 @@ namespace QuickSlackStatusUpdate.Controllers
 
                 if (savedTokens.Count > 0)
                 {
-                    return savedTokens.First().TeamName;
+                    return savedTokens.First();
                 }
             }
 

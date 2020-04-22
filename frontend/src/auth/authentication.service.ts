@@ -17,10 +17,11 @@ class AuthenticationService {
             method: 'GET'
         });
 
-        const { name, workspaceName } = response.data;
+        const { name, workspaceId, workspaceName } = response.data;
 
         return {
             name,
+            workspaceId,
             workspaceName
         };
     }
