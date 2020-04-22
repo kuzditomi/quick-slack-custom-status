@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using QuickSlackStatusUpdate.Data;
+using QuickSlackStatusUpdate.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,11 +41,19 @@ namespace QuickSlackStatusUpdate.Controllers
 
         [HttpGet()]
         [Route("/me")]
-        public IActionResult Me()
+        public async Task<IActionResult> Me()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return Ok(new { Name = User.Identity.Name });
+                var workspaceName = await GetUserWorkspaceName();
+
+                var user = new UserViewModel
+                {
+                    Name = User.Identity.Name,
+                    WorkspaceName = workspaceName
+                };
+
+                return Ok(user);
             }
 
             return Unauthorized();
@@ -129,6 +138,23 @@ namespace QuickSlackStatusUpdate.Controllers
             // after a successful authentication flow (e.g Google or Facebook).
             return SignOut(new AuthenticationProperties { RedirectUri = "/" },
                 CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        private async Task<string> GetUserWorkspaceName()
+        {
+            var userIdClaim = User.Claims.SingleOrDefault(c => c.Type == SlackAuthenticationConstants.Claims.UserId);
+
+            if (userIdClaim != null && !String.IsNullOrEmpty(userIdClaim.Value))
+            {
+                var savedTokens = await this._dbContext.WorkspaceTokens.Where(t => t.UserId == userIdClaim.Value).ToListAsync();
+
+                if (savedTokens.Count > 0)
+                {
+                    return savedTokens.First().TeamName;
+                }
+            }
+
+            return null;
         }
     }
 }

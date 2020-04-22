@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.scss';
-import Header from './header/Header.container';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from './configureStore';
@@ -8,6 +7,8 @@ import PrivateRoute from './auth/PrivateRoute.container';
 import { useEffect } from 'react';
 import { authenticationService } from './auth/authentication.service';
 import { authenticationLoadingAction, authenticationErrorAction, authenticationSuccessAction } from './auth/authentication.actions';
+import { LoginComponent } from './auth/Login.component';
+import Main from './Main.container';
 
 export const App: React.FC = () => {
   const store = configureStore();
@@ -24,26 +25,21 @@ export const App: React.FC = () => {
       });
   });
 
-  const login = ()=>{
-    window.location.href = '/api/auth/signin';
-  };
-
   return (
     <Provider store={store}>
       <div className="App">
         <Router>
-          <Header />
+          <header>
+            <h1>Quick slack status updates</h1>
+          </header>
           <main>
             <Switch>
               <Route path="/login" exact={true}>
-                <button onClick={()=> login()}>Connect using slack</button>
+                <LoginComponent/>
               </Route>
-              <PrivateRoute path="/company/:id" exact={true} >
-                hello
+              <PrivateRoute path="/" exact={true} >
+                <Main/>
               </PrivateRoute>
-              <Route path="/" exact={true}>
-                Home
-              </Route>
             </Switch>
           </main>
         </Router>
