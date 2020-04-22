@@ -22,7 +22,9 @@ namespace QuickSlackStatusUpdate.Controllers
         public string access_token { get; set; }
     }
 
-    public class AuthController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class AuthController : ControllerBase
     {
         private string clientId;
         private string clientSecret;
@@ -36,7 +38,19 @@ namespace QuickSlackStatusUpdate.Controllers
             this._dbContext = dbContext;
         }
 
-        [Route("/api/slack/authorize")]
+        [HttpGet()]
+        [Route("/me")]
+        public IActionResult Me()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Ok(new { Name = User.Identity.Name });
+            }
+
+            return Unauthorized();
+        }
+
+        [Route("/slack/authorize")]
         [HttpGet]
         public async Task<ActionResult> Authenticate(string code)
         {
@@ -100,15 +114,14 @@ namespace QuickSlackStatusUpdate.Controllers
         }
 
 
-        [Route("~/signin")]
-        [HttpPost]
+        [Route("signin")]
+        [HttpGet]
         public ActionResult Authenticate()
         {
             return Challenge(new AuthenticationProperties { RedirectUri = "/" }, SlackAuthenticationDefaults.AuthenticationScheme);
         }
 
-        [HttpGet("~/signout")]
-        [HttpPost("~/signout")]
+        [HttpPost("signout")]
         public IActionResult SignOut()
         {
             // Instruct the cookies middleware to delete the local cookie created

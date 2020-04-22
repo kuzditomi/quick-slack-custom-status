@@ -1,0 +1,22 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-react"
+    ],
+    "linterOptions": {
+        "exclude": [
+            "src/serviceWorker.ts",
+            "src/index.tsx",
+            "node_modules"
+        ]
+    },
+    "jsRules": {},
+    "rules": {
+        "semicolon": true,
+        "jsx-no-lambda": false,
+        "jsx-no-multiline-js": false,
+        "jsx-alignment": false
+    },
+    "rulesDirectory": []
+}

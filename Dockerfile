@@ -1,7 +1,7 @@
 # Stage 1
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /build
-COPY QuickSlackStatusUpdate .
+COPY api .
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app
 
