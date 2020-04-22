@@ -59,6 +59,18 @@ namespace QuickSlackStatusUpdate.Controllers
             return Unauthorized();
         }
 
+        [HttpGet()]
+        [Route("link")]
+        public ActionResult LinkWithSlack()
+        {
+            var scope = "users.profile:write";
+            var redirectUri = string.Format("{0}://{1}{2}", Request.Scheme, Request.Host.Value, "/api/slack/authorize");
+
+            var url = $"https://slack.com/oauth/authorize?scope={scope}&client_id={clientId}&redirect_uri={redirectUri}";
+
+            return new RedirectResult(url, false);
+        }
+
         [Route("/slack/authorize")]
         [HttpGet]
         public async Task<ActionResult> Authenticate(string code)
