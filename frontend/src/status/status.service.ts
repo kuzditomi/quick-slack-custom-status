@@ -8,6 +8,16 @@ const defaultStatus: Status = {
 };
 
 class StatusService {
+    addStatus(text: string, emoji: string) {
+        const statuses = this.getStatuses();
+        statuses.push({
+            id: genUUID(),
+            text,
+            emoji
+        });
+        this.saveStatuses(statuses);
+    }
+
     getStatuses(): Status[] {
         const statusesJson = localStorage.getItem(STORAGE_KEY);
 
@@ -22,6 +32,10 @@ class StatusService {
         } catch {
             return [defaultStatus];
         }
+    }
+
+    private saveStatuses(statuses: Status[]){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(statuses || []));
     }
 }
 

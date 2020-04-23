@@ -1,16 +1,18 @@
 import React from 'react';
 import { User } from './auth/authentication.models';
-import { StatusListComponent } from './status/StatusList.component';
+import StatusList from './status/StatusList.container';
+import StatusAdder from './status/StatusAdder.container';
 
 export interface MainStateProps {
     user?: User;
 }
 
 export interface MainDispatchProps {
+    loadStatuses(): void;
     logout(): void;
 }
 
-export const MainComponent: React.FC<MainStateProps & MainDispatchProps> = ({ user, logout }) => {
+export const MainComponent: React.FC<MainStateProps & MainDispatchProps> = ({ user, logout, loadStatuses }) => {
     if (!user) {
         return <p>Something went wrong :(</p>;
     }
@@ -27,22 +29,26 @@ export const MainComponent: React.FC<MainStateProps & MainDispatchProps> = ({ us
         );
     };
 
-    const renderStatuses = () => (
-        <div>
-            <p>Using workspace <b>{user.workspaceName}</b>.</p>
-            <StatusListComponent />
-        </div>
-    );
+    const renderStatuses = () => {
+        loadStatuses();
+        return (
+            <div>
+                <p>Using workspace <b>{user.workspaceName}</b>.</p>
+                <StatusList />
+
+                <StatusAdder />
+            </div>
+        );
+    };
 
 
     return (
         <div>
             hello {user.name}!
-
             {
                 user.workspaceName ? renderStatuses() : renderAuthorizationButton()
             }
-            <button onClick={() => { logout(); }}>Log out </button>
+            <button className="logout" onClick={() => { logout(); }}>Log out </button>
         </div>
     );
 };

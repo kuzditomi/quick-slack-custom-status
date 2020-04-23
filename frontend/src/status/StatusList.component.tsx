@@ -1,18 +1,40 @@
 import React from 'react';
-import { statusService } from './status.service';
+import './status-list.scss';
+import { Status } from './status.models';
 
-export const StatusListComponent: React.FC = () => {
-    const statuses = statusService.getStatuses();
+export interface StatusListStateProps {
+    statuses: Status[];
+}
+
+export const StatusListComponent: React.FC<StatusListStateProps> = ({statuses}) => {
+    const updateStatus = (status: Status) => {
+        // console.log(status);
+    };
+
+    const removeStatus = (status: Status) => {
+        // console.log(status);
+    };
 
     return (
         <div>
-            {
-                statuses.map((status, index) => (
-                    <div key={index} className="status">
-                        {status.text} ({status.emoji})
-                    </div>
-                ))
-            }
+            <div className="status-list">
+                {
+                    statuses.map((status, index) => (
+                        <div key={index} className="status-list-item">
+                            <label className="status-text">
+                                {status.text}
+                            </label>
+                            <span className="status-emoji">
+                                ({status.emoji})
+                        </span>
+                            <div className="status-actions">
+                                <button onClick={() => updateStatus(status)}>Update!</button>
+                                <button onClick={() => removeStatus(status)}>Remove</button>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
         </div>
     );
 };

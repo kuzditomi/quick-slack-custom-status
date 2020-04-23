@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { authenticationService } from './auth/authentication.service';
 import { logoutAction } from './auth/authentication.actions';
+import { statusService } from './status/status.service';
+import { statusLoadAction } from './status/status.actions';
 
 const mapStateToProps = (state: AppState): MainStateProps => ({
     user: userSelector(state)
@@ -15,6 +17,11 @@ const mapDispatchToProps = (dispatch: Dispatch): MainDispatchProps => ({
         await authenticationService.logout();
 
         dispatch(logoutAction());
+    },
+    loadStatuses: () => {
+        const statuses = statusService.getStatuses();
+
+        dispatch(statusLoadAction(statuses));
     }
 });
 
