@@ -5,10 +5,11 @@ Available at https://slack-status.kuzditomi.com
 # Development
 For development, you will need
 - dotnet core 3.1 sdk
+- nodejs
 - docker
 
-You will need to run the web app and the reverse proxy for development.
-After starting them, you can reach the app on https://localhost
+You will need to run the web api, the frontend app and the reverse proxy for development.
+After starting them, you can reach the app on https://localhost, but it's advised to setup a valid domain-like address in the hostsfile for slack authorization to work better.
 
 ### Setup
 You need two environment variables for the app to run:
@@ -17,10 +18,17 @@ You need two environment variables for the app to run:
 
 You either specify them on your machine for development, or use an `.env` file when running in docker
 
-### Running the web app
+### Running the web api
 ```
-cd QuickSlackStatusUpdate
+cd api
 dotnet run
+```
+
+### Running the frontend app
+```
+cd frontend
+npm ci
+npm run start
 ```
 
 ## Running the reverse-proxy

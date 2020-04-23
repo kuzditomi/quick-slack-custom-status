@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using QuickSlackStatusUpdate.Data;
+using QuickSlackStatusUpdate.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,9 @@ namespace QuickSlackStatusUpdate.Controllers
         public string access_token { get; set; }
     }
 
-    public class AuthController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class AuthController : ControllerBase
     {
         private string clientId;
         private string clientSecret;
@@ -36,7 +39,40 @@ namespace QuickSlackStatusUpdate.Controllers
             this._dbContext = dbContext;
         }
 
-        [Route("/api/slack/authorize")]
+        [HttpGet()]
+        [Route("/me")]
+        public async Task<IActionResult> Me()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var workspace = await GetUserWorkspace();
+
+                var user = new UserViewModel
+                {
+                    Name = User.Identity.Name,
+                    LinkId = workspace?.Id.ToString() ?? String.Empty,
+                    WorkspaceName = workspace?.TeamName ?? String.Empty
+                };
+
+                return Ok(user);
+            }
+
+            return Unauthorized();
+        }
+
+        [HttpGet()]
+        [Route("link")]
+        public ActionResult LinkWithSlack()
+        {
+            var scope = "users.profile:write";
+            var redirectUri = string.Format("{0}://{1}{2}", Request.Scheme, Request.Host.Value, "/api/slack/authorize");
+
+            var url = $"https://slack.com/oauth/authorize?scope={scope}&client_id={clientId}&redirect_uri={redirectUri}";
+
+            return new RedirectResult(url, false);
+        }
+
+        [Route("/slack/authorize")]
         [HttpGet]
         public async Task<ActionResult> Authenticate(string code)
         {
@@ -75,7 +111,6 @@ namespace QuickSlackStatusUpdate.Controllers
                 return new StatusCodeResult(500);
             }
 
-
             var savedToken = await this._dbContext.WorkspaceTokens.SingleOrDefaultAsync(t => t.UserId == workspaceTokenResponse.user_id && t.TeamId == t.TeamId);
 
             if (savedToken != null)
@@ -100,15 +135,14 @@ namespace QuickSlackStatusUpdate.Controllers
         }
 
 
-        [Route("~/signin")]
-        [HttpPost]
+        [Route("signin")]
+        [HttpGet]
         public ActionResult Authenticate()
         {
             return Challenge(new AuthenticationProperties { RedirectUri = "/" }, SlackAuthenticationDefaults.AuthenticationScheme);
         }
 
-        [HttpGet("~/signout")]
-        [HttpPost("~/signout")]
+        [HttpPost("signout")]
         public IActionResult SignOut()
         {
             // Instruct the cookies middleware to delete the local cookie created
@@ -116,6 +150,23 @@ namespace QuickSlackStatusUpdate.Controllers
             // after a successful authentication flow (e.g Google or Facebook).
             return SignOut(new AuthenticationProperties { RedirectUri = "/" },
                 CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        private async Task<WorkspaceToken> GetUserWorkspace()
+        {
+            var userIdClaim = User.Claims.SingleOrDefault(c => c.Type == SlackAuthenticationConstants.Claims.UserId);
+
+            if (userIdClaim != null && !String.IsNullOrEmpty(userIdClaim.Value))
+            {
+                var savedTokens = await this._dbContext.WorkspaceTokens.Where(t => t.UserId == userIdClaim.Value).ToListAsync();
+
+                if (savedTokens.Count > 0)
+                {
+                    return savedTokens.First();
+                }
+            }
+
+            return null;
         }
     }
 }
