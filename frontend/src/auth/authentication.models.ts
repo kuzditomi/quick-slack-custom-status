@@ -1,5 +1,5 @@
 export interface User {
     name: string;
-    workspaceId: string;
+    linkId: string;
     workspaceName: string;
 }

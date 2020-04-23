@@ -3,18 +3,16 @@ import './status-list.scss';
 import { Status } from './status.models';
 
 export interface StatusListStateProps {
+    linkId?: string;
     statuses: Status[];
 }
 
-export const StatusListComponent: React.FC<StatusListStateProps> = ({statuses}) => {
-    const updateStatus = (status: Status) => {
-        // console.log(status);
-    };
+export interface StatusListDispatchProps {
+    removeStatus(status: Status): void;
+    updateStatus(linkId: string, status: Status): void;
+}
 
-    const removeStatus = (status: Status) => {
-        // console.log(status);
-    };
-
+export const StatusListComponent: React.FC<StatusListStateProps & StatusListDispatchProps> = ({linkId, statuses, removeStatus, updateStatus}) => {
     return (
         <div>
             <div className="status-list">
@@ -26,9 +24,9 @@ export const StatusListComponent: React.FC<StatusListStateProps> = ({statuses}) 
                             </label>
                             <span className="status-emoji">
                                 ({status.emoji})
-                        </span>
+                            </span>
                             <div className="status-actions">
-                                <button onClick={() => updateStatus(status)}>Update!</button>
+                                <button onClick={() => updateStatus(linkId || '', status)}>Update!</button>
                                 <button onClick={() => removeStatus(status)}>Remove</button>
                             </div>
                         </div>

@@ -17,18 +17,18 @@ export const StatusAdderComponent: React.FC<StatusAdderDispatchProps> = ({ addSt
     };
 
     return (
-        <div>
+        <div className="status-adder">
             <div>
                 <label>
                     status text
-                <input type="text" placeholder="Coffee break" value={text} onChange={evt => setText(evt.target.value)} />
                 </label>
+                <input type="text" placeholder="Coffee break" value={text} onChange={evt => setText(evt.target.value)} />
             </div>
             <div>
                 <label>
                     status emoji
-                <input type="emoji" placeholder=":coffee:" value={emoji} onChange={evt => setEmoji(evt.target.value)} />
                 </label>
+                <input type="emoji" placeholder=":coffee:" value={emoji} onChange={evt => setEmoji(evt.target.value)} />
             </div>
 
             <button onClick={() => { callAddStatus(); }}>Add to list!</button>

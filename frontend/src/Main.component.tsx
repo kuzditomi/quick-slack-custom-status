@@ -35,7 +35,6 @@ export const MainComponent: React.FC<MainStateProps & MainDispatchProps> = ({ us
             <div>
                 <p>Using workspace <b>{user.workspaceName}</b>.</p>
                 <StatusList />
-
                 <StatusAdder />
             </div>
         );

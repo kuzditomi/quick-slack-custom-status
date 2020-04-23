@@ -50,7 +50,7 @@ namespace QuickSlackStatusUpdate.Controllers
                 var user = new UserViewModel
                 {
                     Name = User.Identity.Name,
-                    WorkspaceId = workspace?.TeamId ?? String.Empty,
+                    LinkId = workspace?.Id.ToString() ?? String.Empty,
                     WorkspaceName = workspace?.TeamName ?? String.Empty
                 };
 

@@ -1,4 +1,6 @@
 import { Status } from './status.models';
+import { AxiosInstance } from 'axios';
+import axios from 'axios';
 
 const STORAGE_KEY = 'slack-statuses';
 const defaultStatus: Status = {
@@ -8,6 +10,14 @@ const defaultStatus: Status = {
 };
 
 class StatusService {
+    private axios: AxiosInstance;
+
+    constructor() {
+        this.axios = axios.create({
+            withCredentials: true
+        });
+    }
+
     addStatus(text: string, emoji: string) {
         const statuses = this.getStatuses();
         statuses.push({
@@ -16,6 +26,26 @@ class StatusService {
             emoji
         });
         this.saveStatuses(statuses);
+    }
+
+    removeStatus(status: Status) {
+        const statuses = this.getStatuses();
+
+        const newStatuses = statuses.filter(s => s.id !== status.id);
+
+        this.saveStatuses(newStatuses || []);
+    }
+
+    async updateStatus(linkId: string,status: Status) {
+        await axios({
+            method: 'POST',
+            url: '/api/slack/status',
+            params: {
+                linkId,
+                statustext: status.text,
+                statusemoji: status.emoji
+            }
+        });
     }
 
     getStatuses(): Status[] {

@@ -12,7 +12,9 @@ using System.Threading.Tasks;
 
 namespace QuickSlackStatusUpdate.Controllers
 {
-    public class SlackController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class SlackController : ControllerBase
     {
         private SlackDataContext _dbContext;
         public SlackController(SlackDataContext dbContext)
@@ -42,7 +44,7 @@ namespace QuickSlackStatusUpdate.Controllers
             return null;
         }
 
-        [Route("/api/slack/status")]
+        [Route("status")]
         [HttpPost]
         public async Task<ActionResult> UpdateStatus(string linkId, string statustext, string statusemoji)
         {
