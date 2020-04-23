@@ -1,5 +1,6 @@
 import React from 'react';
 import { User } from './auth/authentication.models';
+import { StatusListComponent } from './status/StatusList.component';
 
 export interface MainStateProps {
     user?: User;
@@ -26,11 +27,13 @@ export const MainComponent: React.FC<MainStateProps & MainDispatchProps> = ({ us
         );
     };
 
-    const renderStatuses = () => {
-        return (
+    const renderStatuses = () => (
+        <div>
             <p>Using workspace <b>{user.workspaceName}</b>.</p>
-        );
-    };
+            <StatusListComponent />
+        </div>
+    );
+
 
     return (
         <div>
