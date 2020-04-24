@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '@material-ui/core';
 
 export const LoginComponent: React.FC = () => {
     const login = () => {
@@ -7,7 +8,7 @@ export const LoginComponent: React.FC = () => {
 
     return (
         <div>
-            <button onClick={() => { login(); }}>Authenticate with Slack</button>
+            <Button color="primary" variant="contained" onClick={() => { login(); }}>Authenticate with Slack</Button>
         </div>
     );
 };

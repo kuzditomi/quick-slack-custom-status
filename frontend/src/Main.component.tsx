@@ -2,6 +2,7 @@ import React from 'react';
 import { User } from './auth/authentication.models';
 import StatusList from './status/StatusList.container';
 import StatusAdder from './status/StatusAdder.container';
+import { Typography, Button } from '@material-ui/core';
 
 export interface MainStateProps {
     user?: User;
@@ -32,22 +33,26 @@ export const MainComponent: React.FC<MainStateProps & MainDispatchProps> = ({ us
     const renderStatuses = () => {
         loadStatuses();
         return (
-            <div>
-                <p>Using workspace <b>{user.workspaceName}</b>.</p>
+            <>
+                <Typography>Let's do some status updates using workspace <b>{user.workspaceName}</b>!</Typography>
                 <StatusList />
                 <StatusAdder />
-            </div>
+            </>
         );
     };
 
 
     return (
         <div>
-            hello {user.name}!
+            <Typography component="h1" variant="h6">
+                Hello {user.name},
+            </Typography>
             {
                 user.workspaceName ? renderStatuses() : renderAuthorizationButton()
             }
-            <button className="logout" onClick={() => { logout(); }}>Log out </button>
+
+            <Button style={{marginTop: 5}} fullWidth={true} color="primary" variant="outlined"
+                onClick={() => { logout(); }}>Log out</Button>
         </div>
     );
 };

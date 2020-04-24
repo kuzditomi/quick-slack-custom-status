@@ -1,6 +1,28 @@
 import React from 'react';
-import './status-list.scss';
 import { Status } from './status.models';
+import { List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Theme, createStyles, withStyles, WithStyles } from '@material-ui/core';
+import SyncIcon from '@material-ui/icons/Sync';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { grey, red, green } from '@material-ui/core/colors';
+
+const styles = (theme: Theme) =>
+    createStyles({
+        listitem: {
+            '&:hover': {
+                backgroundColor: grey[200]
+            }
+        },
+        updateIcon: {
+            '&:hover': {
+                color: green[700]
+            }
+        },
+        deleteIcon: {
+            '&:hover': {
+                color: red[700]
+            }
+        }
+    });
 
 export interface StatusListStateProps {
     linkId?: string;
@@ -12,27 +34,27 @@ export interface StatusListDispatchProps {
     updateStatus(linkId: string, status: Status): void;
 }
 
-export const StatusListComponent: React.FC<StatusListStateProps & StatusListDispatchProps> = ({linkId, statuses, removeStatus, updateStatus}) => {
+const StatusList: React.FC<StatusListStateProps & StatusListDispatchProps & WithStyles<typeof styles>> = ({ linkId, statuses, removeStatus, updateStatus, classes }) => {
     return (
-        <div>
-            <div className="status-list">
-                {
-                    statuses.map((status, index) => (
-                        <div key={index} className="status-list-item">
-                            <label className="status-text">
-                                {status.text}
-                            </label>
-                            <span className="status-emoji">
-                                ({status.emoji})
-                            </span>
-                            <div className="status-actions">
-                                <button onClick={() => updateStatus(linkId || '', status)}>Update!</button>
-                                <button onClick={() => removeStatus(status)}>Remove</button>
-                            </div>
-                        </div>
-                    ))
-                }
-            </div>
-        </div>
+        <List component="nav">
+            {
+                statuses.map((status, index) => (
+                    <ListItem key={index} className={classes.listitem}>
+                        <ListItemText primary={`${status.text} (${status.emoji})`} />
+                        <ListItemSecondaryAction>
+                            <IconButton title="Update status!" onClick={() => updateStatus(linkId || '', status)} className={classes.updateIcon}>
+                                <SyncIcon />
+                            </IconButton>
+                            <IconButton title="Remove from list" onClick={() => removeStatus(status)} className={classes.deleteIcon}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                ))
+            }
+        </List>
     );
 };
+
+
+export const StatusListComponent = withStyles(styles)(StatusList);

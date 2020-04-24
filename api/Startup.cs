@@ -78,8 +78,6 @@ namespace QuickSlackStatusUpdate
                 return next();
             });
 
-            app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthentication();
