@@ -3,6 +3,7 @@ import { User } from './auth/authentication.models';
 import StatusList from './status/StatusList.container';
 import StatusAdder from './status/StatusAdder.container';
 import { Typography, Button } from '@material-ui/core';
+import { IntroComponent } from './Intro.component';
 
 export interface MainStateProps {
     user?: User;
@@ -34,7 +35,8 @@ export const MainComponent: React.FC<MainStateProps & MainDispatchProps> = ({ us
         loadStatuses();
         return (
             <>
-                <Typography>Let's do some status updates using workspace <b>{user.workspaceName}</b>!</Typography>
+                <IntroComponent />
+                <Typography className="welcome">Let's do some status updates using workspace <b>{user.workspaceName}</b>!</Typography>
                 <StatusList />
                 <StatusAdder />
             </>
@@ -51,7 +53,7 @@ export const MainComponent: React.FC<MainStateProps & MainDispatchProps> = ({ us
                 user.workspaceName ? renderStatuses() : renderAuthorizationButton()
             }
 
-            <Button style={{marginTop: 5}} fullWidth={true} color="primary" variant="outlined"
+            <Button style={{ marginTop: 5 }} fullWidth={true} color="primary" variant="outlined"
                 onClick={() => { logout(); }}>Log out</Button>
         </div>
     );

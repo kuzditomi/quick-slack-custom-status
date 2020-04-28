@@ -33,6 +33,7 @@ const StatusAdder: React.FC<StatusAdderDispatchProps & WithStyles<typeof styles>
         <div className={classes.container}>
             <div className={classes.inputs}>
                 <TextField
+                    className="status-text-input"
                     label="Status text"
                     value={text}
                     onChange={evt => setText(evt.target.value)}
@@ -40,6 +41,7 @@ const StatusAdder: React.FC<StatusAdderDispatchProps & WithStyles<typeof styles>
                     margin="normal"
                 />
                 <TextField
+                    className="status-emoji-input"
                     label="Status emoji"
                     value={emoji}
                     onChange={evt => setEmoji(evt.target.value)}
@@ -47,7 +49,7 @@ const StatusAdder: React.FC<StatusAdderDispatchProps & WithStyles<typeof styles>
                     margin="normal"
                 />
             </div>
-            <Button color="primary" variant="contained" onClick={() => { callAddStatus(); }}>Add to list!</Button>
+            <Button className="add-status-button" color="primary" variant="contained" onClick={() => { callAddStatus(); }}>Add to list!</Button>
         </div>
     );
 };

@@ -11,6 +11,8 @@ import Main from './Main.container';
 import AppThemeComponent from './AppTheme.component';
 import { CssBaseline, Paper, Theme, createStyles, WithStyles, withStyles } from '@material-ui/core';
 import HeaderComponent from './Header.component';
+import 'intro.js/introjs.css';
+import './styles.css';
 
 const styles = (theme: Theme) =>
   createStyles({

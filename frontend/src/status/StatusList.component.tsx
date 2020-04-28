@@ -39,10 +39,10 @@ const StatusList: React.FC<StatusListStateProps & StatusListDispatchProps & With
         <List component="nav">
             {
                 statuses.map((status, index) => (
-                    <ListItem key={index} className={classes.listitem}>
+                    <ListItem key={index} className={`${classes.listitem} ${index === statuses.length - 1 ? 'intro-status-listitem' : ''}`}>
                         <ListItemText primary={`${status.text} (${status.emoji})`} />
                         <ListItemSecondaryAction>
-                            <IconButton title="Update status!" onClick={() => updateStatus(linkId || '', status)} className={classes.updateIcon}>
+                            <IconButton className={`${classes.updateIcon} ${index === statuses.length - 1 ? 'intro-status-update-button' : ''}`} title="Update status!" onClick={() => updateStatus(linkId || '', status)}>
                                 <SyncIcon />
                             </IconButton>
                             <IconButton title="Remove from list" onClick={() => removeStatus(status)} className={classes.deleteIcon}>
