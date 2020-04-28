@@ -6,3 +6,4 @@ obj/
 db/
 .env
 node_modules
+deploy.ps1

@@ -20,6 +20,8 @@ const mapDispatchToProps = (dispatch: Dispatch): StatusListDispatchProps => ({
     },
     updateStatus: async (linkId: string, status: Status) => {
         await statusService.updateStatus(linkId, status);
+
+        ga('send', 'event', 'status-update');
     }
 });
 
